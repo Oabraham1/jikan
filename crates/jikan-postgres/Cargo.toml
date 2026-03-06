@@ -4,6 +4,9 @@ version = "0.1.0"
 edition.workspace = true
 license.workspace = true
 
+[features]
+bench = []
+
 [dependencies]
 jikan-core = { path = "../jikan-core" }
 tokio = { workspace = true }
@@ -13,3 +16,11 @@ tracing = { workspace = true }
 bytes = { workspace = true }
 tokio-postgres = { version = "0.7", features = ["with-uuid-1", "with-chrono-0_4"] }
 futures = { workspace = true }
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+
+[[bench]]
+name = "decode"
+harness = false
+required-features = ["bench"]

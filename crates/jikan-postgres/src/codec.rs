@@ -95,6 +95,29 @@ fn decode_delete(payload: &[u8], position: Position) -> Result<ChangeEvent, Jika
     })
 }
 
+/// Benchmark helpers for the pgoutput decoder.
+///
+/// Gated behind the `bench` feature to avoid polluting the public API in
+/// normal builds. Re-exported from `crate::codec_bench` for use in
+/// criterion benchmarks.
+#[cfg(feature = "bench")]
+pub mod bench {
+    /// Constructs a synthetic pgoutput INSERT payload for benchmarking.
+    ///
+    /// The payload follows the pgoutput wire format: tag byte `I`, then a
+    /// minimal tuple. Used only in benchmarks.
+    pub fn make_insert_payload() -> bytes::Bytes {
+        // 'I' tag, followed by a 4-byte relation OID (0), tuple type 'N',
+        // column count (1), and a text column with value "bench_value".
+        let mut v = vec![b'I', 0, 0, 0, 0, b'N', 0, 1, b't'];
+        let text = b"bench_value";
+        let len = (text.len() as u32).to_be_bytes();
+        v.extend_from_slice(&len);
+        v.extend_from_slice(text);
+        bytes::Bytes::from(v)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
