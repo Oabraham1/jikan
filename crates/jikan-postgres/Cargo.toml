@@ -12,3 +12,4 @@ serde = { workspace = true }
 tracing = { workspace = true }
 bytes = { workspace = true }
 tokio-postgres = { version = "0.7", features = ["with-uuid-1", "with-chrono-0_4"] }
+futures = { workspace = true }
