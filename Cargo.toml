@@ -1,0 +1,31 @@
+[workspace]
+members = [
+    "crates/jikan-core",
+    "crates/jikan-postgres",
+    "crates/jikan-mysql",
+    "crates/jikan-mongo",
+    "crates/jikan-kafka",
+    "crates/jikan-webhook",
+    "crates/jikan-snapshot",
+    "crates/jikan-cli",
+]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+license = "Apache-2.0"
+authors = ["Ojima Abraham"]
+repository = "https://github.com/Oabraham1/jikan"
+
+[workspace.dependencies]
+tokio = { version = "1", features = ["full"] }
+tokio-stream = "0.1"
+async-trait = "0.1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+bytes = "1"
+uuid = { version = "1", features = ["v4"] }
+chrono = { version = "0.4", features = ["serde"] }

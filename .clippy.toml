@@ -1,0 +1,2 @@
+# Require that every public item in every crate is documented.
+missing-docs-in-crate-items = true

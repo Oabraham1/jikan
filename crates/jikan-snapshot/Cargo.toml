@@ -1,0 +1,13 @@
+[package]
+name = "jikan-snapshot"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+jikan-core = { path = "../jikan-core" }
+tokio = { workspace = true }
+tokio-stream = { workspace = true }
+async-trait = { workspace = true }
+serde = { workspace = true }
+tracing = { workspace = true }
