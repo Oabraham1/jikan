@@ -1,0 +1,15 @@
+[package]
+name = "jikan-integration"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dev-dependencies]
+jikan-core     = { path = "../../crates/jikan-core" }
+jikan-postgres = { path = "../../crates/jikan-postgres" }
+jikan-snapshot = { path = "../../crates/jikan-snapshot" }
+tokio          = { workspace = true }
+tracing-subscriber = { workspace = true }
+futures        = { workspace = true }
+async-trait    = { workspace = true }
+tempfile       = "3"

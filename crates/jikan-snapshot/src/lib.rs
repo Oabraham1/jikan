@@ -8,9 +8,9 @@
 //! positions ≤ snapshot_position belong to the snapshot; positions above it
 //! belong to the stream. Violating this boundary is a non-recoverable error.
 
-mod buffer;
-mod engine;
-mod merger;
+pub mod buffer;
+pub mod engine;
+pub mod merger;
 
 pub use engine::{SnapshotConfig, SnapshotEngine};
 pub use merger::StreamMerger;

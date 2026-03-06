@@ -8,6 +8,7 @@ members = [
     "crates/jikan-webhook",
     "crates/jikan-snapshot",
     "crates/jikan-cli",
+    "tests/integration",
 ]
 resolver = "2"
 

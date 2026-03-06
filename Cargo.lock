@@ -1367,6 +1367,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "jikan-integration"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "futures",
+ "jikan-core",
+ "jikan-postgres",
+ "jikan-snapshot",
+ "tempfile",
+ "tokio",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "jikan-kafka"
 version = "0.1.0"
 dependencies = [

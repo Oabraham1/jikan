@@ -97,6 +97,18 @@ impl Position {
     }
 }
 
+/// ```compile_fail
+/// use jikan_core::position::{Lsn, Position, GtidSet};
+/// let pg = Position::Lsn(Lsn(100));
+/// let my = Position::Gtid(GtidSet("uuid:1".into()));
+/// // This must not compile: Position does not implement PartialOrd.
+/// let _ = pg < my;
+/// ```
+///
+/// Cross-source position comparison is undefined (Lamport 1978). Use
+/// `Position::is_after` only when both positions are from the same source.
+pub fn _cross_source_comparison_is_forbidden() {}
+
 #[cfg(test)]
 mod tests {
     use super::*;
