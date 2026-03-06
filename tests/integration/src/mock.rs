@@ -73,7 +73,7 @@ impl Source for MockSource {
         Ok(Box::pin(stream))
     }
 
-    fn decode(&self, _raw: RawEvent) -> Result<ChangeEvent, JikanError> {
+    fn decode(&self, _raw: RawEvent) -> Result<Option<ChangeEvent>, JikanError> {
         Err(JikanError::ReplicationProtocol(
             "mock source does not decode raw events".into(),
         ))

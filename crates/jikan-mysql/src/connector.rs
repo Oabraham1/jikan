@@ -99,8 +99,8 @@ impl Source for MySqlSource {
         crate::binlog::open_binlog_stream(&self.config.url, self.config.server_id, gtid_set).await
     }
 
-    fn decode(&self, raw: RawEvent) -> Result<ChangeEvent, JikanError> {
-        crate::codec::decode_binlog_event(raw)
+    fn decode(&self, raw: RawEvent) -> Result<Option<ChangeEvent>, JikanError> {
+        crate::codec::decode_binlog_event(raw).map(Some)
     }
 
     async fn current_position(&self) -> Result<Position, JikanError> {

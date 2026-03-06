@@ -53,9 +53,11 @@ pub trait Source: Send + Sync {
 
     /// Decodes a `RawEvent` into a `ChangeEvent`.
     ///
-    /// Decoding is separate from streaming so the snapshot engine can buffer
-    /// raw events cheaply and decode only those that survive the merge.
-    fn decode(&self, raw: RawEvent) -> Result<ChangeEvent, JikanError>;
+    /// Returns `None` for control messages (BEGIN, COMMIT, RELATION) that
+    /// carry no row data for the sink. Decoding is separate from streaming
+    /// so the snapshot engine can buffer raw events cheaply and decode only
+    /// those that survive the merge.
+    fn decode(&self, raw: RawEvent) -> Result<Option<ChangeEvent>, JikanError>;
 
     /// Returns the current replication position of the source.
     ///

@@ -12,8 +12,12 @@ use jikan_core::{
     source::{EventStream, SnapshotChunkStream, Source},
     table::TableSchema,
 };
+use std::sync::Arc;
+use tokio::sync::RwLock;
 use tokio_postgres::NoTls;
 use tracing::{info, instrument};
+
+use crate::codec::RelationCache;
 
 /// Configuration for a PostgreSQL source connection.
 #[derive(Debug, Clone)]
@@ -34,6 +38,12 @@ pub struct PostgresConfig {
 /// read snapshot chunks.
 pub struct PostgresSource {
     config: PostgresConfig,
+    /// Cached table schemas, populated by `table_schemas()` and used by
+    /// `snapshot_chunk()` to resolve primary keys and column types.
+    schema_cache: Arc<RwLock<Vec<TableSchema>>>,
+    /// Shared relation cache used by the pgoutput decoder to resolve
+    /// RELATION OIDs to column descriptors.
+    relation_cache: RelationCache,
 }
 
 impl PostgresSource {
@@ -56,7 +66,11 @@ impl PostgresSource {
         });
 
         info!(source_id = %config.source_id.0, "connected to postgres");
-        Ok(Self { config })
+        Ok(Self {
+            config,
+            schema_cache: Arc::new(RwLock::new(Vec::new())),
+            relation_cache: RelationCache::new(),
+        })
     }
 
     /// Derives the replication slot name from the source identifier.
@@ -100,8 +114,8 @@ impl Source for PostgresSource {
         Ok(stream)
     }
 
-    fn decode(&self, raw: RawEvent) -> Result<ChangeEvent, JikanError> {
-        crate::codec::decode_pgoutput(raw)
+    fn decode(&self, raw: RawEvent) -> Result<Option<ChangeEvent>, JikanError> {
+        crate::codec::decode_pgoutput(raw, &self.relation_cache)
     }
 
     #[instrument(skip(self), fields(source_id = %self.config.source_id.0))]
@@ -129,7 +143,9 @@ impl Source for PostgresSource {
     }
 
     async fn table_schemas(&self) -> Result<Vec<TableSchema>, JikanError> {
-        crate::snapshot::query_table_schemas(&self.config.connection_string).await
+        let schemas = crate::snapshot::query_table_schemas(&self.config.connection_string).await?;
+        *self.schema_cache.write().await = schemas.clone();
+        Ok(schemas)
     }
 
     async fn snapshot_chunk(
@@ -137,7 +153,18 @@ impl Source for PostgresSource {
         cursor: &ChunkCursor,
         chunk_size: u32,
     ) -> Result<SnapshotChunkStream, JikanError> {
-        crate::snapshot::read_chunk(&self.config.connection_string, cursor, chunk_size).await
+        let cache = self.schema_cache.read().await;
+        let schema = cache
+            .iter()
+            .find(|s| s.table == cursor.table)
+            .ok_or_else(|| {
+                JikanError::Snapshot(format!(
+                    "no schema cached for {}; call table_schemas() first",
+                    cursor.table
+                ))
+            })?;
+        crate::snapshot::read_chunk(&self.config.connection_string, cursor, chunk_size, schema)
+            .await
     }
 
     async fn acknowledge(&self, position: &Position) -> Result<(), JikanError> {

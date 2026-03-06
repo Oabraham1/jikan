@@ -94,8 +94,8 @@ impl Source for MongoSource {
         crate::snapshot::open_change_stream(&self.client, &self.config.databases, ts).await
     }
 
-    fn decode(&self, raw: RawEvent) -> Result<ChangeEvent, JikanError> {
-        crate::codec::decode_change_event(raw)
+    fn decode(&self, raw: RawEvent) -> Result<Option<ChangeEvent>, JikanError> {
+        crate::codec::decode_change_event(raw).map(Some)
     }
 
     async fn current_position(&self) -> Result<Position, JikanError> {
