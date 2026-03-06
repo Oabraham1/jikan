@@ -1426,8 +1426,10 @@ name = "jikan-snapshot"
 version = "0.1.0"
 dependencies = [
  "async-trait",
+ "futures",
  "jikan-core",
  "serde",
+ "serde_json",
  "tokio",
  "tokio-stream",
  "tracing",
