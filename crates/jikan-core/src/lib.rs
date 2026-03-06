@@ -9,6 +9,7 @@ pub mod event;
 pub mod position;
 pub mod sink;
 pub mod source;
+pub mod stdout_sink;
 pub mod table;
 pub mod watchdog;
 
@@ -18,5 +19,6 @@ pub use event::{ChangeEvent, EventKind, RawEvent};
 pub use position::{GtidSet, Lsn, OplogTimestamp, Position, SourceId};
 pub use sink::Sink;
 pub use source::Source;
+pub use stdout_sink::StdoutSink;
 pub use table::{ColumnValue, PrimaryKey, TableId, TableSchema};
 pub use watchdog::PipelineWatchdog;

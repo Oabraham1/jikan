@@ -3,5 +3,9 @@
 
 //! HTTP webhook sink for Jikan.
 //!
-//! Delivers events with at-least-once semantics. Callers that require
-//! exactly-once must implement idempotency on the receiving end.
+//! Delivers events with at-least-once semantics. Receivers must implement
+//! idempotency if exactly-once processing is required.
+
+mod sink;
+
+pub use sink::{WebhookConfig, WebhookSink};

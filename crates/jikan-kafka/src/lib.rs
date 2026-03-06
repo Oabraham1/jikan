@@ -3,6 +3,9 @@
 
 //! Kafka sink for Jikan.
 //!
-//! Delivers events with exactly-once semantics via Kafka transactions
-//! (two-phase commit), satisfying the sink participation requirement
-//! from Carbone et al. (2015).
+//! Delivers events with exactly-once semantics via Kafka producer transactions,
+//! satisfying the 2PC sink participation requirement from Carbone et al. (2015).
+
+mod sink;
+
+pub use sink::{KafkaConfig, KafkaSink};
