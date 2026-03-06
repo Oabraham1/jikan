@@ -4,6 +4,15 @@
 //! Core types, traits, and error definitions shared across all Jikan crates.
 //!
 //! This crate contains no I/O. It is the vocabulary every other crate speaks.
-//! The type system here enforces the invariants from the theoretical foundation:
-//! [`Position`] deliberately omits `PartialOrd` so cross-source comparison is
-//! a compile-time error (Lamport 1978).
+
+pub mod checkpoint;
+pub mod error;
+pub mod event;
+pub mod position;
+pub mod table;
+
+pub use checkpoint::{Checkpoint, ChunkCursor, PipelinePhase};
+pub use error::JikanError;
+pub use event::{ChangeEvent, EventKind, RawEvent};
+pub use position::{GtidSet, Lsn, OplogTimestamp, Position, SourceId};
+pub use table::{ColumnValue, PrimaryKey, TableId, TableSchema};

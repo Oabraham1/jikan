@@ -21,6 +21,9 @@ jobs:
         with:
           components: clippy, rustfmt
 
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y libsasl2-dev libcurl4-openssl-dev libssl-dev
+
       - name: Cache cargo registry
         uses: Swatinem/rust-cache@v2
 
