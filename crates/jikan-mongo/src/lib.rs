@@ -4,4 +4,10 @@
 //! MongoDB source connector for Jikan.
 //!
 //! Consumes change streams and takes point-in-time snapshots using
-//! `atClusterTime` to anchor the Chandy-Lamport marker.
+//! `atClusterTime` to anchor the Chandy-Lamport marker (1985).
+
+mod codec;
+mod connector;
+mod snapshot;
+
+pub use connector::{MongoConfig, MongoSource};
